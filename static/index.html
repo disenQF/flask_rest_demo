@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+</head>
+<body>
+<form>
+
+    <input name="name" placeholder="用户名">
+    <input name="phone" placeholder="手机号">
+    <button type="button" onclick="addUser()">添加用户</button>
+</form>
+
+<form id="f2">
+    <input type="hidden" name="id">
+    <input name="name" placeholder="用户名">
+    <input name="phone" placeholder="手机号">
+    <button type="button" onclick="updatePhone()">修改手机号</button>
+</form>
+
+<form id="f3">
+    <input name="name" placeholder="用户名">
+    <input name="photo" type="file">
+    <button type="button" onclick="upload()">提交</button>
+</form>
+<img src="" width="200" height="200" id="preImg">
+
+
+<script src="/static/js/jquery.min.js"></script>
+<script>
+    $(function () {
+        $('#preImg').hide();
+
+        $.getJSON('/user/', function (data) {
+            user1 = data.data[0];
+            $("#f2 input[name='name']").val(user1.name);
+            $("#f2 input[name='id']").val(user1.id);
+            $("#f2 input[name='phone']").val(user1.phone);
+        })
+    })
+
+    function addUser() {
+        $.ajax('/user/', {
+            type:'post',
+            data: $('form').serialize(),
+            dataType:'json',
+            success:function (data) {
+                alert(data.msg);
+            }
+        })
+    }
+    function updatePhone() {
+        $.ajax('/user/', {
+            type:'put',
+            data: $('#f2').serialize(),
+            dataType: 'json',
+            success:function (data) {
+                alert(data.msg);
+            }
+        })
+    }
+
+    function upload() {
+        $.ajax('/upload/',{
+            type:'post',
+            contentType:false,
+            processData: false,
+            data: new FormData($('#f3')[0]),
+            dataType:'json',
+            success: function (data) {
+                alert(data.msg);
+                $('#preImg').attr('src', data.path);
+                $('#preImg').fadeIn(200);
+            }
+        })
+    }
+</script>
+</body>
+</html>
