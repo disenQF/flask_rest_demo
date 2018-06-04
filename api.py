@@ -18,8 +18,6 @@ def init_api(app):
     dao.init_db(app)
 
 
-
-
 class UserApi(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('id', type=int, required=False, help='必须提供一个id')
@@ -37,6 +35,7 @@ class UserApi(Resource):
 
     def get(self):
         self.parser.parse_args()
+
 
         users = dao.query(User).all()
         respJson = json.dumps(marshal(data={"status": "ok", "data": users}, fields=self.out_fields))
